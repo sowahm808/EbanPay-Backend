@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger'); 
+const isAdmin = require('./middleware/isAdmin');
+
 
 const ussdRoutes = require("./routes/ussd");
 const payorRoutes = require("./routes/payor");
@@ -21,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
+
 app.use("/ussd", ussdRoutes);
 app.use("/payor", payorRoutes);
 app.use("/users", userRoutes);
@@ -30,6 +35,8 @@ app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
+app.use('/api-docs', isAdmin, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 // MongoDB connection

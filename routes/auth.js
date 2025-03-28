@@ -4,6 +4,43 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Log in a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [phone, password]
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 example: "6823736649"
+ *               password:
+ *                 type: string
+ *                 example: "secret123"
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Login successful
+ *               token: your-jwt-token
+ *               user:
+ *                 fullName: Michael Sowah
+ *                 phone: 6823736649
+ *                 role: payor
+ *                 points: 0
+ *       401:
+ *         description: Invalid credentials
+ */
+
 const JWT_SECRET = process.env.JWT_SECRET || "eban_secret";
 
 // SIGNUP

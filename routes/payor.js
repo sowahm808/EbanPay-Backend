@@ -54,5 +54,11 @@ router.post("/create-voucher", async (req, res) => {
     res.status(500).json({ error: "Error creating voucher" });
   }
 });
+// Get vouchers created by payor
+router.get('/vouchers', authMiddleware, async (req, res) => {
+  const phone = req.user.phone;
+  const vouchers = await Voucher.find({ createdBy: phone });
+  res.json(vouchers);
+});
 
 module.exports = router;
