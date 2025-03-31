@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Voucher = require("../models/Voucher");
+const { initiateMoMoCheckout } = require("../utils/momoAT");
 const { simulateMoMoPayout } = require("../utils/momoSim");
 const { simulateSMS } = require("../utils/smsSim");
 const requireAuth = require("../middleware/requireAuth"); // your JWT middleware
@@ -22,13 +23,20 @@ router.post("/", requireAuth,async (req, res) => {
     // Simulate mobile money payout
     const payoutResult = simulateMoMoPayout(phoneNumber, voucher.amount);
 
+     // Call Africa's Talking Mobile Money API for checkout
+     const productName = process.env.AT_MOMO_PRODUCT_NAME; // e.g., 'EbanPay'
+     const momoResponse = await initiateMoMoCheckout(phoneNumber, voucher.amount, productName, { voucherCode });
+    
+     
+
     // Optionally send SMS notification about the cashout
     await simulateSMS(phoneNumber, `Your cashout of GHS ${voucher.amount} was successful. Transaction ID: ${payoutResult.transactionId}`);
 
     // Respond with the simulated payout details
     res.json({
       message: "Cashout successful",
-      payout: payoutResult
+      //payout: payoutResult
+      momoResponse
     });
   } catch (error) {
     console.error("Cashout error:", error);

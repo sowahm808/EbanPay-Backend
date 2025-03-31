@@ -2,9 +2,14 @@ const express = require("express");
 const router = express.Router();
 const Voucher = require("../models/Voucher");
 const Redemption = require("../models/Redemption");
-// You can add Payout or other models as needed
+const sendSMS = require("../services/smsService"); // Ensure this is your production SMS service
 
-// USSD endpoint handling the session-based input
+const crypto = require("crypto");
+
+function generateCode(length = 6) {
+  return crypto.randomBytes(length).toString("hex").slice(0, length).toUpperCase();
+}
+
 router.post("/", async (req, res) => {
   // Extract USSD session parameters from the request body
   const { sessionId, phoneNumber, text } = req.body;
@@ -14,7 +19,7 @@ router.post("/", async (req, res) => {
   try {
     // Main menu if no input is provided
     if (text === "") {
-      response = `CON Welcome to EbanPay
+      response = `CON Welcome to EbanPay USSD
 1. Redeem Voucher
 2. My Points`;
     }
@@ -32,29 +37,29 @@ router.post("/", async (req, res) => {
       } else {
         const tax = Math.round(voucher.amount * 0.1);
         const netAmount = voucher.amount - tax;
-        response = `CON Voucher found: GHS ${voucher.amount} (Tax: GHS ${tax}).
-You will receive GHS ${netAmount}.
+        response = `CON Voucher found: Amount GH¢${voucher.amount} (Tax GH¢${tax}).
+You will receive GH¢${netAmount}.
 Enter your MoMo PIN to confirm:`;
       }
     }
     // Option 1: Redeem Voucher - Step 3: Process redemption with entered MoMo PIN
     else if (inputs[0] === "1" && inputs.length === 3) {
       const code = inputs[1].trim();
-      // MoMo PIN can be validated here if integrated with a Momo service
-      const momoPin = inputs[2].trim(); // Currently, we simply accept it
+      const momoPin = inputs[2].trim();
+      // (Here you could integrate real MoMo PIN verification)
       const voucher = await Voucher.findOne({ code });
       if (!voucher || voucher.isRedeemed || voucher.recipientPhone !== phoneNumber) {
         response = `END Invalid or already redeemed voucher.`;
       } else {
         const tax = Math.round(voucher.amount * 0.1);
         const netAmount = voucher.amount - tax;
-        // Mark voucher as redeemed and record tax, net amount and timestamp
+        // Mark voucher as redeemed
         voucher.isRedeemed = true;
         voucher.taxCharged = tax;
         voucher.redeemedAt = new Date();
         await voucher.save();
 
-        // Optionally log redemption details in a separate collection
+        // Log redemption
         await Redemption.create({
           voucherCode: code,
           recipientPhone: phoneNumber,
@@ -64,16 +69,17 @@ Enter your MoMo PIN to confirm:`;
           redeemedAt: new Date()
         });
 
-        // Optionally, trigger an SMS notification here (e.g., simulateSMS(phoneNumber, message))
+        // Trigger SMS notification
+        await sendSMS(phoneNumber, `EbanPay: Voucher redeemed successfully! You received GH¢${netAmount}. Tax GH¢${tax} forwarded to GRA.`);
         response = `END Voucher Redeemed!
-Received: GHS ${netAmount}
-Tax: GHS ${tax} sent to GRA.`;
+Received: GH¢${netAmount}
+Tax: GH¢${tax} sent to GRA.`;
       }
     }
-    // Option 2: My Points - Display the user's current points
+    // Option 2: My Points - Return the user's current points
     else if (text === "2") {
-      // In a real implementation, look up the user via phoneNumber or session
-      // For simulation, we return a dummy points balance
+      // In a production system, look up the user via phoneNumber
+      // Here, we simulate a points balance.
       response = "END Your current points balance is 50 points.";
     }
     // Fallback for invalid inputs
@@ -81,7 +87,6 @@ Tax: GHS ${tax} sent to GRA.`;
       response = "END Invalid option selected. Please try again.";
     }
 
-    // Set the response content type to plain text (required for USSD responses)
     res.set("Content-Type", "text/plain");
     res.send(response);
   } catch (err) {

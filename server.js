@@ -17,6 +17,8 @@ const redemptionRoutes = require("./routes/redemptions");
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const cashoutRoutes = require("./routes/cashout");
+const momoCallbackRoutes = require("./routes/momoCallback");
+
 
 
 
@@ -36,6 +38,7 @@ app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/cashout", cashoutRoutes);
 
+app.use("/momo-callback", momoCallbackRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
 app.use('/api-docs', isAdmin, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
