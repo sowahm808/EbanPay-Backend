@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const requireAuth = require("../middleware/requireAuth"); // Ensure the path is correct
 
-router.get("/check", async (req, res) => {
+router.get("/check",requireAuth, async (req, res) => {
   const phone = req.query.phone;
 
   if (phone === 'me') {

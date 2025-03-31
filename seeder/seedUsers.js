@@ -11,13 +11,22 @@ mongoose.connect(process.env.MONGO_URI)
         fullName: "Ama Mensah",
         phone: "+233244123456",
         role: "payor",
-        points: 0
+        points: 0,
+        password: "123456" // <-- Default password
       },
       {
         fullName: "Kwame Kofi",
         phone: "+233200123456",
         role: "recipient",
-        points: 0
+        points: 0,
+        password: "123456" // <-- Default password
+      },
+      {
+        fullName: "Admin User",
+        phone: "+233244000000",
+        role: "admin",
+        points: 0,
+        password: "123456" // <-- Default password for admin
       }
     ];
 

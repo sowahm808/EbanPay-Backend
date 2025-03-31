@@ -16,6 +16,7 @@ const pointsRoutes = require("./routes/points");
 const redemptionRoutes = require("./routes/redemptions");
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
+const cashoutRoutes = require("./routes/cashout");
 
 
 
@@ -33,6 +34,7 @@ app.use("/points", pointsRoutes);
 app.use("/redemptions", redemptionRoutes);
 app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
+app.use("/cashout", cashoutRoutes);
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
