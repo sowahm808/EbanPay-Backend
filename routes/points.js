@@ -16,13 +16,15 @@ router.get("/check", requireAuth, async (req, res) => {
 
   try {
     const user = await User.findOne({ phone });
-    if (!user || user.role !== "payor") {
-      return res.status(404).json({ error: "Payor not found" });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
     res.json({
       fullName: user.fullName,
       phone: user.phone,
-      points: user.points
+      role: user.role,
+      points: user.points ?? 0
     });
   } catch (err) {
     console.error(err);
