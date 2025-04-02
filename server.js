@@ -22,7 +22,7 @@ const cashoutRoutes = require("./routes/cashout");
 const momoCallbackRoutes = require("./routes/momoCallback");
 const exportRoutes = require("./routes/export");
 const notificationRoutes = require('./routes/notifications');
-const remindersRoute = require('./routes/reminders'); 
+const remindersRoute = require('./routes/voucherReminder'); 
 
 
 
@@ -51,7 +51,7 @@ app.use('/api-docs', isAdmin, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/export", exportRoutes);
 app.use('/notifications', notificationRoutes);
-app.use('/reminders', remindersRoute);
+app.use('/voucherReminder', remindersRoute);
 
 
 
