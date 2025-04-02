@@ -1,17 +1,24 @@
-require("dotenv").config();
-const africastalking = require("africastalking")({
+const africastalking = require('africastalking')({
   apiKey: process.env.AT_API_KEY,
-  username: process.env.AT_USERNAME,
+  username: process.env.AT_USERNAME
 });
+const Notification = require('../models/Notification');
 
 const sms = africastalking.SMS;
 
-const sendSMS = (phone, message) => {
-  return sms.send({
-    to: [phone],
-    message,
-    from: process.env.AT_SHORTCODE, // optional
-  });
+const sendSMS = async (to, message) => {
+  try {
+    const response = await sms.send({
+      to: [to],
+      message,
+    });
+
+    await Notification.create({ phone: to, message, type: 'sms', status: 'sent' });
+    console.log("✅ SMS logged and sent:", response);
+  } catch (error) {
+    console.error("❌ SMS error:", error.message);
+    await Notification.create({ phone: to, message, type: 'sms', status: 'failed' });
+  }
 };
 
 module.exports = sendSMS;

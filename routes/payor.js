@@ -148,7 +148,11 @@ router.get("/vouchers", authMiddleware, async (req, res) => {
    */
 
   const phone = req.user.phone;
+  console.log("📞 Authenticated payor phone:", phone);
+
   const vouchers = await Voucher.find({ createdBy: phone });
+  console.log("🧾 Found vouchers:", vouchers.length);
+
   res.json(vouchers);
 });
 

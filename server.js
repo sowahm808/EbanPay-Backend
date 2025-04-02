@@ -1,4 +1,6 @@
 require("dotenv").config();
+require('./cron/reminderJob'); 
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -18,6 +20,10 @@ const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const cashoutRoutes = require("./routes/cashout");
 const momoCallbackRoutes = require("./routes/momoCallback");
+const exportRoutes = require("./routes/export");
+const notificationRoutes = require('./routes/notifications');
+const remindersRoute = require('./routes/reminders'); 
+
 
 
 
@@ -42,6 +48,11 @@ app.use("/momo-callback", momoCallbackRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
 app.use('/api-docs', isAdmin, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use("/export", exportRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/reminders', remindersRoute);
+
 
 
 // MongoDB connection

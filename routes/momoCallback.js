@@ -45,12 +45,12 @@ router.post("/", async (req, res) => {
     // Option 2: Update voucher record if you want to mark it redeemed after callback confirmation
     // Uncomment and modify if required:
     // const voucher = await Voucher.findOne({ code: voucherCode });
-    // if (voucher) {
-    //   voucher.isRedeemed = true;
-    //   voucher.redeemedAt = new Date();
-    //   await voucher.save();
-    //   console.log("Voucher updated:", voucher);
-    // }
+    if (voucher) {
+      voucher.isRedeemed = true;
+      voucher.redeemedAt = new Date();
+      await voucher.save();
+      console.log("Voucher updated:", voucher);
+    }
 
     console.log("MoMo callback processed:", payload);
     res.status(200).send("OK");

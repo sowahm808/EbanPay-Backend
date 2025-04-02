@@ -7,7 +7,11 @@ const voucherSchema = new mongoose.Schema({
   isRedeemed: { type: Boolean, default: false },
   taxCharged: { type: Number, default: 0 },
   momoTransactionId: { type: String },
-  redeemedAt: { type: Date }
+  redeemedAt: { type: Date },
+  createdBy: { type: String, required: true }, // usually the payor's phone
+  createdAt: { type: Date, default: Date.now }, 
+  reminderSent: { type: Boolean, default: false }, 
+
 }, { timestamps: true });
 
 module.exports = mongoose.model("Voucher", voucherSchema);
