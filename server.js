@@ -30,8 +30,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(cors({
-  origin: ['https://ebanpay.netlify.app', 'http://localhost:4200'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: ['https://ebanpay.netlify.app'],
+  //methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
