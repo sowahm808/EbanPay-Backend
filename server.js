@@ -24,16 +24,13 @@ const exportRoutes = require("./routes/export");
 const notificationRoutes = require('./routes/notifications');
 const remindersRoute = require('./routes/voucherReminder'); 
 
-
-
-
-
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors({
   origin: ['https://yourfrontend.netlify.app', 'http://localhost:4200'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
