@@ -1,82 +1,62 @@
-require("dotenv").config();
-require('./cron/reminderJob'); 
+require('dotenv').config();
+require('./cron/reminderJob');
 
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger'); 
+const swaggerSpec = require('./swagger');
 const isAdmin = require('./middleware/isAdmin');
-
-
-const ussdRoutes = require("./routes/ussd");
-const payorRoutes = require("./routes/payor");
-const userRoutes = require("./routes/users");
-const pointsRoutes = require("./routes/points");
-const redemptionRoutes = require("./routes/redemptions");
-const authRoutes = require("./routes/auth");
-const adminRoutes = require("./routes/admin");
-const cashoutRoutes = require("./routes/cashout");
-const momoCallbackRoutes = require("./routes/momoCallback");
-const exportRoutes = require("./routes/export");
-const notificationRoutes = require('./routes/notifications');
-const remindersRoute = require('./routes/voucherReminder'); 
-const momoRoutes = require('./routes/momo');
-const hubtelCallback = require('./routes/hubtelCallback');
-const voucherRoutes = require('./routes/voucher');
-
-
 
 const app = express();
 
+// Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
+// CORS Setup
 app.use(cors({
   origin: ['https://ebanpay.netlify.app'],
-  //methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
-app.use("/ussd", ussdRoutes);
-app.use("/payor", payorRoutes);
-app.use("/users", userRoutes);
-app.use("/points", pointsRoutes);
-app.use("/redemptions", redemptionRoutes);
-app.use("/auth", authRoutes);
-app.use("/admin", adminRoutes);
-app.use("/cashout", cashoutRoutes);
-
-app.use("/momo-callback", momoCallbackRoutes);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
+// Swagger Documentation (apply isAdmin only to /api-docs if needed)
 app.use('/api-docs', isAdmin, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use("/export", exportRoutes);
-app.use('/notifications', notificationRoutes);
-app.use('/voucherReminder', remindersRoute);
-app.use('/momo', momoRoutes);
-app.use('/callback', hubtelCallback);
-app.use('/api', voucherRoutes)
+// Routes
+app.use('/ussd', require('./routes/ussd'));
+app.use('/payor', require('./routes/payor'));
+app.use('/users', require('./routes/users'));
+app.use('/points', require('./routes/points'));
+app.use('/redemptions', require('./routes/redemptions'));
+app.use('/auth', require('./routes/auth'));
+app.use('/admin', require('./routes/admin'));
+app.use('/cashout', require('./routes/cashout'));
+app.use('/momo-callback', require('./routes/momoCallback'));
+app.use('/export', require('./routes/export'));
+app.use('/notifications', require('./routes/notifications'));
+app.use('/voucherReminder', require('./routes/voucherReminder'));
+app.use('/momo', require('./routes/momo'));
+app.use('/callback', require('./routes/hubtelCallback'));
+app.use('/api', require('./routes/voucher')); // API routes (e.g. /api/voucher/redeem)
 
-
-
-
-// MongoDB connection
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 20000,
+  serverSelectionTimeoutMS: 20000
 })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("DB connection error", err));
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch(err => console.error('❌ DB connection error:', err));
 
+// Log connection errors
+mongoose.connection.on('error', err => {
+  console.error('❌ Mongoose runtime error:', err);
+});
+
+// Server Listener
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`EbanPay backend running on port ${PORT}`);
-});
-mongoose.connection.on('error', err => {
-  console.error('Mongoose runtime error:', err);
+  console.log(`🚀 EbanPay backend running on port ${PORT}`);
 });
