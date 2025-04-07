@@ -23,6 +23,11 @@ const momoCallbackRoutes = require("./routes/momoCallback");
 const exportRoutes = require("./routes/export");
 const notificationRoutes = require('./routes/notifications');
 const remindersRoute = require('./routes/voucherReminder'); 
+const momoRoutes = require('./routes/momo');
+const hubtelCallback = require('./routes/hubtelCallback');
+const voucherRoutes = require('./routes/voucher');
+
+
 
 const app = express();
 
@@ -52,6 +57,10 @@ app.use('/api-docs', isAdmin, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/export", exportRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/voucherReminder', remindersRoute);
+app.use('/momo', momoRoutes);
+app.use('/callback', hubtelCallback);
+app.use('/voucher', voucherRoutes)
+
 
 
 
