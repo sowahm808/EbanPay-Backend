@@ -59,7 +59,7 @@ app.use('/notifications', notificationRoutes);
 app.use('/voucherReminder', remindersRoute);
 app.use('/momo', momoRoutes);
 app.use('/callback', hubtelCallback);
-app.use('/voucher', voucherRoutes)
+app.use('/api', voucherRoutes)
 
 
 
