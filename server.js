@@ -17,7 +17,7 @@ app.use(express.json());
 
 // CORS Setup
 app.use(cors({
-  origin: ['https://ebanpay.netlify.app'],
+  origin: ['https://ebanpay.netlify.app', 'http://localhost:4200'],
   credentials: true
 }));
 
