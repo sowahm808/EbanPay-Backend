@@ -3,7 +3,7 @@ const router = express.Router();
 const Voucher = require('../models/Voucher');
 
 // POST /api/voucher/redeem
-router.post('/voucher/redeem', async (req, res) => {
+router.post('/redeem', async (req, res) => {
   const { voucherCode, momoPin } = req.body;
 
   if (!voucherCode || !momoPin) {

@@ -17,7 +17,7 @@ app.use(express.json());
 
 // CORS Setup
 app.use(cors({
-  origin: ['https://ebanpay.netlify.app', 'http://localhost:4200'],
+  origin: ['https://ebanpay.netlify.app', 'http://localhost:4200','http://localhost:8100','http://localhost:3000'],
   credentials: true
 }));
 
@@ -39,7 +39,7 @@ app.use('/notifications', require('./routes/notifications'));
 app.use('/voucherReminder', require('./routes/voucherReminder'));
 app.use('/momo', require('./routes/momo'));
 app.use('/callback', require('./routes/hubtelCallback'));
-app.use('/api', require('./routes/voucher')); // API routes (e.g. /api/voucher/redeem)
+app.use('/voucher', require('./routes/voucher')); // API routes (e.g. /api/voucher/redeem)
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
