@@ -39,7 +39,6 @@ app.use('/notifications', require('./routes/notifications'));
 app.use('/voucherReminder', require('./routes/voucherReminder'));
 app.use('/momo', require('./routes/momo'));
 app.use('/callback', require('./routes/hubtelCallback'));
-app.use('/voucher', require('./routes/voucher')); // API routes (e.g. /api/voucher/redeem)
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
@@ -47,16 +46,16 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 20000
 })
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch(err => console.error('❌ DB connection error:', err));
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('DB connection error:', err));
 
 // Log connection errors
 mongoose.connection.on('error', err => {
-  console.error('❌ Mongoose runtime error:', err);
+  console.error(' Mongoose runtime error:', err);
 });
 
 // Server Listener
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 EbanPay backend running on port ${PORT}`);
+  console.log(` EbanPay backend running on port ${PORT}`);
 });
